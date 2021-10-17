@@ -3,7 +3,7 @@ navbar:
   title: "EZH2-PE Project"
   left:
     - text: "Development"
-      href: ezh2_pe.html
+      href: index.html
     - text: "Disease"
       href: second_page.html
 output_dir: "docs"
