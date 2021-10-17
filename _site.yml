@@ -1,0 +1,9 @@
+name: "EZH2-PE Project"
+navbar:
+  title: "EZH2-PE Project"
+  left:
+    - text: "Development"
+      href: index.html
+    - text: "Disease"
+      href: second_page.html
+output_dir: "docs"

@@ -1,0 +1,170 @@
+---
+title: "poison_exon_analysis"
+author: "Reinnier Padilla"
+date: "26/09/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(RColorBrewer)
+library(ggrepel)
+library(plotly)
+library(DESeq2)
+library(data.table)
+library(dplyr)
+library(tidyverse)
+library(DESeq2)
+library(heatmaply)
+library(GeneOverlap)
+library(patchwork)
+library(eulerr)
+library(apeglm)
+library(gprofiler2)
+library(reactable)
+library(ggpubr)
+library(splitstackshape)
+library(magrittr)
+library(reshape2)
+library(tidyr)
+library(biomaRt)
+library(bigmemory, quiet = TRUE) #use for data file much larger than memory and actual computation is not a bottleneck
+#use attach.big.matrix("data")
+library(microbenchmark) #profile individual functions
+library(compiler) #byte-compiling = not necessarily as fast
+library(Rcpp)
+library(reticulate)
+library(plotly)
+setwd("~/Documents/PhD_research/poison_exons/rMATS_results")
+use_virtualenv("myenv")
+```
+
+```{r functions, include = FALSE}
+##################### FUNCTIONS #############################
+get_feature_counts_mat <- function(x,y){
+  raw_dat <- fread(x) %>%
+    dplyr::select(-(2:6))
+  colnames(raw_dat) <- c("gene",y)
+  raw_dat <- raw_dat %>%
+    column_to_rownames("gene") %>%
+    as.matrix()
+  return(raw_dat)
+} #read in feature count data 
+
+get_raw_counts <- function(x,y){
+  raw_dat <- fread(x)
+  colnames(raw_dat) <- c("gene",y)
+  raw_dat <- raw_dat %>%
+    column_to_rownames("gene") %>%
+    as.matrix()
+  return(raw_dat)
+} #read in raw count data sans all the features
+
+### function to extract PEs ###
+pe_extraction_function <- function(x,y,a,b){
+  se <- read.table(x,sep = '\t', header = TRUE, stringsAsFactors = FALSE) 
+  se$coordinates_cassette_exon <- sprintf("%s:%d-%d",se$chr,se$exonStart_0base,se$exonEnd)#this is the coordinates for the cassette exon
+  se$coordinates_range <- sprintf("%s:%d-%d",se$chr,se$upstreamES,se$downstreamEE)
+  #coordinates for the range
+  se_df <- se %>%
+    filter(geneSymbol %in% c("EZH2")) %>%
+    dplyr::select(-c(1))
+  se_df <- se_df[c(23,24,1:22)]
+  #poison exons with cassette exon and range coordinates
+  pe_target_list <- read.csv("final_pe_hits.csv")
+  colnames(pe_target_list)[3] <- "geneSymbol"
+  colnames(pe_target_list)[2] <- "coordinates_cassette_exon"
+  combined_df_se <- inner_join(se_df,pe_target_list, by = "coordinates_cassette_exon")
+  combined_df_se <- combined_df_se %>%
+    dplyr::select(IncLevel1,IncLevel2,PValue) %>% concat.split.multiple(.,seps = ",",direction = "long",split.cols = c("IncLevel1","IncLevel2"))#removed PValue here
+  colnames(combined_df_se)[colnames(combined_df_se)=='IncLevel1'] <- a
+  colnames(combined_df_se)[colnames(combined_df_se)=='IncLevel2'] <- b
+  combined_df_se$cell_line <- y
+  combined_df_se <- combined_df_se %>%
+    melt(id.var = "cell_line",variable.name = "condition",value.name = "PSI")
+  return(combined_df_se)
+}
+
+comp_pe_extraction_function <- cmpfun(pe_extraction_function)#byte compiling not as fast in this case
+
+#microbenchmark(pe_extraction_function("SE.MATS.JC.dipg.ko.k27m.txt","DIPG","KO/WT","K27M"), comp_pe_extraction_function("SE.MATS.JC.dipg.ko.k27m.txt","DIPG","KO/WT","K27M")) #benchmark the two functions
+
+#C++ function
+cppFunction("int times (int x,int y){
+            int product = x * y;
+            return product;
+            }") #difficult with large complex functions
+
+#get mart dataset for human gene symbols
+mart <- useDataset("hsapiens_gene_ensembl", useMart("ensembl"))
+
+get_hgnc_symbol <- function(x){
+  x <- x %>% 
+    as.data.frame() %>%
+    rownames_to_column("ensembl_gene_id")
+  hgnc_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id","hgnc_symbol"),values=x$ensembl_gene_id,mart= mart)
+  final <- left_join(x,hgnc_list,by="ensembl_gene_id")
+  return(final)
+}
+```
+
+```{python packages}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+```
+```{r}
+hindbrain_16 <- fread("fc_hindbrain_16.txt")
+```
+
+```{python, include = FALSE}
+hindbrain_16 = r.hindbrain_16 #read in object from R
+hindbrain_16 = hindbrain_16.rename(columns={'/lustre04/scratch/stevenh/cardoso_2019_hg19/bam/ERR2598078.sorted.bam':'Count'})
+#df.columns to get the columns for df
+#df.head(n =)
+#dropping columns
+hindbrain_16 = hindbrain_16.drop(columns = ['Chr','Strand','Length','Start','End'])
+```
+
+
+```{r generate_normalized_counts, include =FALSE}
+files_to_read_hindbrain <- list.files(path = "~/Documents/PhD_research/poison_exons/rMATS_results",pattern = "^fc_hindbrain_[0-9|1[0-9]|2[0-2]].txt$",full.names = T)
+
+get_normalized_count <- cmpfun(function(x,y,z){
+  ls <- lapply(x,get_feature_counts_mat,"sample") %>%
+    as.data.frame()
+  meta <- data.frame(row.names = colnames(ls),stringsAsFactors = TRUE,"sampletype" = c(1:22))
+  meta$sampletype <- factor(meta$sampletype)
+  normalized_counts <- DESeqDataSetFromMatrix(countData = ls, colData = meta, design = ~ sampletype) %>%
+    DESeq2::estimateSizeFactors() %>%
+    counts(normalized = TRUE) %>%
+    get_hgnc_symbol() %>%
+    filter(hgnc_symbol == 'EZH2') %>%
+    dplyr::select(-c(ensembl_gene_id,hgnc_symbol)) %>%
+    pivot_longer(y,names_to="sample",values_to = "count")
+  normalized_counts$weeks_post_conception <- z #z represents the list of weeks post conception (eg c(4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13,16,16))
+  normalized_counts <- normalized_counts %>% group_by(weeks_post_conception) %>%
+  mutate(mean_gene_exp = mean(count)) %>%
+  distinct(mean_gene_exp, .keep_all = TRUE)
+  return(normalized_counts)
+}) #y represents number of samples in column format (eg 1:22)
+
+hindbrain_normalized_counts <- get_normalized_count(files_to_read_hindbrain, 1:22,c(4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13,16,16))
+
+save(hindbrain_normalized_counts,file="hindbrain_ezh2_gene_exp.RData")
+```
+
+```{r generate scatterplot EZH2 gene expression vs PSI of EZH2-PE, include = FALSE}
+#HINDBRAIN
+hindbrain_normalized_counts %>%
+  ggplot(aes(x = weeks_post_conception, y = mean_gene_exp)) +
+  geom_point() +
+  geom_smooth(method="lm") +
+  stat_cor(method = "pearson", cor.coef.name = "R") +
+  labs(title = "Hindbrain",x="Weeks Post-Conception",y="EZH2 Gene Expression")
+```
+
+
+
+
