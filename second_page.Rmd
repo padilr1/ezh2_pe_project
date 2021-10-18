@@ -1,10 +1,11 @@
 ---
-title: "second_page"
-author: "Reinnier Padilla"
-date: "17/10/2021"
+title: "K27M"
+author: ""
+date: ""
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+

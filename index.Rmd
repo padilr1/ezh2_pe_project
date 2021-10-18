@@ -1,5 +1,5 @@
 ---
-title: "EZH2-PE"
+title: "Dev datasets"
 author: ""
 date: ""
 output:
@@ -20,16 +20,9 @@ library(ggpubr)
 
 # Hindbrain
 
-## PSI & dev time
-<table>
-  <tr>
-    <td><img src="hindbrain_psi_vs_time.jpeg"></td>
-  </tr>
- </table>
-
-## Gene exp & dev time
 ```{r, echo = FALSE, message=FALSE}
 load("hindbrain_ezh2_gene_exp.RData")
+
 hindbrain_normalized_counts %>%
   ggplot(aes(x = weeks_post_conception, y = mean_gene_exp)) +
   geom_point() +
@@ -38,17 +31,5 @@ hindbrain_normalized_counts %>%
   labs(title = "Hindbrain",x="Weeks Post-Conception",y="EZH2 Gene Expression")
 ```
 
-## Gene exp & PSI
-
 # Forebrain
 
-## PSI & dev time
-<table>
-  <tr>
-    <td><img src="forebrain_psi_vs_time.jpeg"></td>
-  </tr>
- </table>
-
-## Gene exp & dev time
-
-## Gene exp & PSI
