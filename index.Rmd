@@ -31,7 +31,7 @@ gene_time_plot <- hindbrain_normalized_counts %>%
   ggplot(aes(x = weeks_post_conception, y = mean_gene_exp)) +
   geom_point() +
   geom_smooth(method="lm") +
-  stat_cor(method = "pearson", cor.coef.name = "R") +
+  stat_cor(method = "pearson", cor.coef.name = "R", label.y = 4500) +
   labs(title = "",x="Weeks Post-conception",y="EZH2 Expression")
 psi_time_plot <- se_dev %>%
   dplyr::filter(condition == "hindbrain") %>%
@@ -47,7 +47,7 @@ gene_psi_plot <- hindbrain_complete %>%
   ggplot(aes(x = mean_psi, y = mean_gene_exp)) +
   geom_point() +
   geom_smooth(method="lm") +
-  stat_cor(method = "pearson", cor.coef.name = "R") +
+  stat_cor(method = "pearson", cor.coef.name = "R", label.y = 4500) +
   labs(title = "",x="EZH2-PE PSI",y="EZH2 Expression")
 
 plot_grid(gene_time_plot,psi_time_plot,gene_psi_plot,labels = "AUTO")
@@ -57,4 +57,34 @@ plot_grid(gene_time_plot,psi_time_plot,gene_psi_plot,labels = "AUTO")
 ```
 
 # Forebrain
+
+```{r, echo = FALSE, message=FALSE}
+load("se_dev.RData")
+load("forebrain_complete.RData")
+load("complete_forebrain.RData")
+fore_gene_time_plot <- forebrain_normalized_counts %>%
+  ggplot(aes(x = weeks_post_conception, y = mean_gene_exp)) +
+  geom_point() +
+  geom_smooth(method="lm") +
+  stat_cor(method = "pearson", cor.coef.name = "R",label.y = 5000) +
+  labs(title = "",x="Weeks Post-conception",y="EZH2 Expression")
+fore_psi_time_plot <- se_dev %>%
+  dplyr::filter(condition == "forebrain") %>%
+  group_by(weeks_post_conception) %>%
+  mutate(mean_psi = mean(PSI)) %>%
+  distinct(mean_psi, .keep_all = TRUE) %>%
+  ggplot(aes(x = weeks_post_conception, y = mean_psi)) +
+  geom_point() +
+  labs(title = "", x = "Weeks Post-conception", y="EZH2-PE PSI") +
+  geom_smooth(method="lm") +
+  stat_cor(method = "pearson", cor.coef.name = "R")
+fore_gene_psi_plot <- complete_forebrain %>%
+  ggplot(aes(x = mean_psi, y = mean_gene_exp)) +
+  geom_point() +
+  geom_smooth(method="lm") +
+  stat_cor(method = "pearson", cor.coef.name = "R", label.y = 5000) +
+  labs(title = "",x="EZH2-PE PSI",y="EZH2 Expression")
+
+plot_grid(fore_gene_time_plot,fore_psi_time_plot,fore_gene_psi_plot,labels = "AUTO")
+```
 
