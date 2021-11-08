@@ -19,9 +19,35 @@ library(ggpubr)
 library(gridExtra)
 library(grid)
 library(cowplot)
+library(reactable)
+library(data.table)
+library(reticulate)
 ```
 
-# Hindbrain
+# EZH2-PE Coordinates
+```{r COORDINATES PE, echo = FALSE}
+
+load("~/Documents/ezh2_pe_project/ezh2_pe_coordinates.RData")
+
+reactable(ezh2_pe_coordinates)
+
+```
+
+# SNRPB Mouse Dataset
+
+```{r, echo = FALSE}
+load("~/Documents/ezh2_pe_project/mouse_snrpb.RData")
+mouse_snrpb %>% filter((condition != "PValue")) %>%
+  ggplot(aes(x = condition, y = PSI)) +
+  geom_boxplot(aes(fill=condition),show.legend = FALSE) +
+  geom_point(aes(y = PSI,group = condition), position = position_dodge(width = 0.75)) +
+  xlab("Condition") +
+  ylab("PSI of EZH2-PE") +
+  theme_bw()
+```
+
+
+# Human Hindbrain
 
 ```{r, echo = FALSE, message=FALSE}
 load("hindbrain_ezh2_gene_exp.RData")
@@ -56,7 +82,7 @@ plot_grid(gene_time_plot,psi_time_plot,gene_psi_plot,labels = "AUTO")
 #annotate_figure(figure,bottom = textGrob("Weeks Post-conception", gp = gpar(cex = 1.0)))
 ```
 
-# Forebrain
+# Human Forebrain
 
 ```{r, echo = FALSE, message=FALSE}
 load("se_dev.RData")
@@ -86,5 +112,55 @@ fore_gene_psi_plot <- complete_forebrain %>%
   labs(title = "",x="EZH2-PE PSI",y="EZH2 Expression")
 
 plot_grid(fore_gene_time_plot,fore_psi_time_plot,fore_gene_psi_plot,labels = "AUTO")
+```
+
+# Forebrain vs Hindbrain
+
+```{python, echo = FALSE, include = FALSE}
+import pandas as pd
+
+df_hindbrain = r.hindbrain_complete
+
+df_hindbrain = df_hindbrain[['condition','mean_psi','weeks_post_conception...3','mean_gene_exp']]
+
+df_hindbrain = df_hindbrain.rename(columns = {'weeks_post_conception...3': 'weeks_post_conception'})
+
+df_forebrain = r.complete_forebrain
+
+df_forebrain = df_forebrain[['condition','mean_psi','weeks_post_conception...3','mean_gene_exp']]
+
+df_forebrain = df_forebrain.rename(columns = {'weeks_post_conception...3': 'weeks_post_conception'})
+
+df_comp_fore_hind_brain = pd.merge(df_forebrain,df_hindbrain,how='inner',on='weeks_post_conception')
+
+df_hindbrain = df_comp_fore_hind_brain[['condition_y','mean_psi_y','weeks_post_conception','mean_gene_exp_y']]
+
+df_hindbrain = df_hindbrain.rename(columns = {'condition_y' : 'condition','mean_psi_y':'mean_psi','mean_gene_exp_y':'mean_gene_exp'})
+
+df_forebrain = df_comp_fore_hind_brain[['condition_x','mean_psi_x','weeks_post_conception','mean_gene_exp_x']]
+
+df_forebrain = df_forebrain.rename(columns = {'condition_x' : 'condition','mean_psi_x':'mean_psi','mean_gene_exp_x':'mean_gene_exp'})
+
+paired_brain_wks = pd.concat([df_forebrain,df_hindbrain])
+
+```
+
+```{r, echo = FALSE}
+load("~/Documents/ezh2_pe_project/paired_brain_wks.RData")
+
+stat.test <- compare_means(mean_psi ~ condition, data = paired_fore_hind_brain,paired = TRUE,p.adjust.method = "fdr", method = 't.test') 
+
+compare_means(mean_psi ~ condition, data = paired_fore_hind_brain,paired = TRUE,p.adjust.method = "fdr", method = 't.test') %>% dplyr::select(-".y.") %>%
+  reactable()
+
+p <- ggplot(paired_fore_hind_brain, aes(x = condition, y = mean_psi)) +
+  geom_boxplot(aes(fill = condition),show.legend = FALSE) +
+  geom_point(aes(y = mean_psi,group = condition), position = position_dodge(width = 0.75)) +
+  xlab("Condition") +
+  ylab("PSI of EZH2-PE") + 
+  theme()
+
+p + stat_pvalue_manual(stat.test, y.position = 0.5, label = "p.adj = {p.adj}", position = position_dodge(0.8))
+
 ```
 

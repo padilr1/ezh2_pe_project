@@ -1,5 +1,5 @@
 ---
-title: "K27M"
+title: ""
 author: ""
 date: ""
 output: html_document
@@ -9,3 +9,9 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Comparing K27M vs K27M-KO
+<table>
+  <tr>
+    <td><img src="gbm_boxplot.jpeg"></td>
+  </tr>
+ </table>

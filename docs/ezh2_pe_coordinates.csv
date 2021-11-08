@@ -1,0 +1,3 @@
+,organism,gene,flanking_exons,cassette_exon,exon_size
+0,mouse,EZH2,chr6:47545675-47547436,chr6:47546748-47546830,82.0
+0,human,EZH2,chr7:148513775-148516779,chr7:148516069-148516151,82.0
