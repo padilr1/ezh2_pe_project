@@ -33,7 +33,7 @@ reactable(ezh2_pe_coordinates)
 
 ```
 
-# SNRPB Mouse Dataset
+# SNRPB Mouse
 
 ```{r, echo = FALSE}
 load("~/Documents/ezh2_pe_project/mouse_snrpb.RData")
@@ -51,6 +51,23 @@ stat.test_2 <- compare_means(PSI ~ condition, data = (mouse_snrpb %>% filter((co
 p1 + stat_pvalue_manual(stat.test_2, y.position = 0.022, label = "p.signif", position = position_dodge(0.8))
 ```
 
+# SF3B4 Mouse
+
+```{r, echo = FALSE}
+load("~/Documents/ezh2_pe_project/mouse_sf3b4.RData")
+
+p1 <- mouse_sf3b4 %>% filter((condition != "PValue")) %>%
+  ggplot(aes(x = condition, y = PSI)) +
+  geom_boxplot(aes(fill=condition),show.legend = FALSE) +
+  geom_point(aes(y = PSI,group = condition), position = position_dodge(width = 0.75)) +
+  xlab("Condition") +
+  ylab("PSI of EZH2-PE") +
+  theme_bw()
+
+stat.test_2 <- compare_means(PSI ~ condition, data = (mouse_sf3b4 %>% filter((condition != "PValue"))),paired = TRUE,p.adjust.method = "fdr", method = 't.test')
+
+p1 + stat_pvalue_manual(stat.test_2, y.position = 0.020, label = "p.signif", position = position_dodge(0.8))
+```
 
 # Human Hindbrain
 
