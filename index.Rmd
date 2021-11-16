@@ -22,53 +22,83 @@ library(cowplot)
 library(reactable)
 library(data.table)
 library(reticulate)
+library(sciplot)
 ```
 
-# EZH2-PE Coordinates
+# Coordinates
 ```{r COORDINATES PE, echo = FALSE}
 
 load("~/Documents/ezh2_pe_project/ezh2_pe_coordinates.RData")
 
 reactable(ezh2_pe_coordinates)
-
 ```
-
-# SNRPB Mouse
-
+# Mouse Neuronal Differentiation
 ```{r, echo = FALSE}
-load("~/Documents/ezh2_pe_project/mouse_snrpb.RData")
+load("~/Documents/ezh2_pe_project/mouse_neuronal_differentation.RData")
 
-p1 <- mouse_snrpb %>% filter((condition != "PValue")) %>%
-  ggplot(aes(x = condition, y = PSI)) +
-  geom_boxplot(aes(fill=condition),show.legend = FALSE) +
-  geom_point(aes(y = PSI,group = condition), position = position_dodge(width = 0.75)) +
-  xlab("Condition") +
-  ylab("PSI of EZH2-PE") +
-  theme_bw()
+mouse_neuronal_differentiation$condition <- as.factor(mouse_neuronal_differentiation$condition)
 
-stat.test_2 <- compare_means(PSI ~ condition, data = (mouse_snrpb %>% filter((condition != "PValue"))),paired = TRUE,p.adjust.method = "fdr", method = 't.test')
+mouse_neuronal_differentiation <- mouse_neuronal_differentiation %>% dplyr::filter(PSI != 0) %>% 
+  dplyr::filter(condition != "NPC") %>% dplyr::slice(-c(10,11)) %>%
+  arrange(condition)
 
-p1 + stat_pvalue_manual(stat.test_2, y.position = 0.022, label = "p.signif", position = position_dodge(0.8))
+mouse_neuronal_differentiation$PSI <- mouse_neuronal_differentiation$PSI*100
+
+compare_means(PSI ~ condition, data = mouse_neuronal_differentiation,paired = FALSE,p.adjust.method = "fdr", method = 't.test') %>% dplyr::select(-".y.") %>% reactable()
 ```
 
-# SF3B4 Mouse
 
-```{r, echo = FALSE}
-load("~/Documents/ezh2_pe_project/mouse_sf3b4.RData")
+```{r, echo = FALSE, fig.cap="Figure 1. Plotted as median +/- interquartile range"}
+my_comparisons = list(c("mESC","NCC"),c("NCC","neuron"),c("mESC","neuron"))
 
-p1 <- mouse_sf3b4 %>% filter((condition != "PValue")) %>%
-  ggplot(aes(x = condition, y = PSI)) +
-  geom_boxplot(aes(fill=condition),show.legend = FALSE) +
-  geom_point(aes(y = PSI,group = condition), position = position_dodge(width = 0.75)) +
-  xlab("Condition") +
-  ylab("PSI of EZH2-PE") +
-  theme_bw()
+#mouse_neuronal_differentiation %>% filter((condition != "PValue")) %>%
+#  ggplot(aes(x = condition, y = PSI*100)) +
+ # geom_boxplot(aes(fill=condition),show.legend = FALSE) +
+ # geom_point(aes(y = PSI*100,group = condition), position = position_dodge(width = 0.75)) +
+  #xlab("Condition") + ggtitle("EZH2-PE",subtitle = "") + ylab("PSI (%) ") +
+  #theme(plot.title = element_text(hjust = 0.5)) +
+ # stat_compare_means(comparisons = my_comparisons,label.y=c(18,20,22),method = "t.test",label = "p.format")
 
-stat.test_2 <- compare_means(PSI ~ condition, data = (mouse_sf3b4 %>% filter((condition != "PValue"))),paired = TRUE,p.adjust.method = "fdr", method = 't.test')
+#data_summary <- function(x) {
+ #  m <- mean(x)
+ #  ymin <- m-sd(x)
+ #  ymax <- m+sd(x)
+ #  return(c(y=m,ymin=ymin,ymax=ymax))
+#}
 
-p1 + stat_pvalue_manual(stat.test_2, y.position = 0.020, label = "p.signif", position = position_dodge(0.8))
+#se = sd(PSI,na.rm = TRUE)/sqrt(3)
+
+#df.summary <- mouse_neuronal_differentiation%>%
+ # dplyr::group_by(condition) %>%
+ # summarise(
+ #   se = se(PSI),
+ #   PSI = mean(PSI)
+#  )
+
+
+df.summary <- mouse_neuronal_differentiation%>%
+  dplyr::group_by(condition) %>%
+  summarise(
+    se = IQR(PSI),
+    PSI = median(PSI)
+  )
+
+ggplot(mouse_neuronal_differentiation,aes(condition,PSI)) +
+  geom_jitter(position = position_jitter(0.2),color = "darkgray", size = 2) +
+  geom_errorbar(aes(ymin = PSI-se, ymax=PSI+se),data=df.summary, width = 0.2,color="#0099ff") +
+  geom_point(aes(x = condition,y=PSI),data=df.summary,color = "#0099ff") +
+  geom_line(aes(x = condition, y= PSI, group = 1),data=df.summary, color = "#0099ff") +
+  ylab("PSI (%)") + xlab("Condition") + 
+  stat_compare_means(comparisons = my_comparisons,label.y=c(18,20,22),method = "t.test",label = "p.format") +
+  ggtitle("EZH2-PE") +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.line = element_line(colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())
 ```
-
 # Human Hindbrain
 
 ```{r, echo = FALSE, message=FALSE}
@@ -138,35 +168,6 @@ plot_grid(fore_gene_time_plot,fore_psi_time_plot,fore_gene_psi_plot,labels = "AU
 
 # Forebrain vs Hindbrain
 
-```{python, echo = FALSE, include = FALSE}
-import pandas as pd
-
-df_hindbrain = r.hindbrain_complete
-
-df_hindbrain = df_hindbrain[['condition','mean_psi','weeks_post_conception...3','mean_gene_exp']]
-
-df_hindbrain = df_hindbrain.rename(columns = {'weeks_post_conception...3': 'weeks_post_conception'})
-
-df_forebrain = r.complete_forebrain
-
-df_forebrain = df_forebrain[['condition','mean_psi','weeks_post_conception...3','mean_gene_exp']]
-
-df_forebrain = df_forebrain.rename(columns = {'weeks_post_conception...3': 'weeks_post_conception'})
-
-df_comp_fore_hind_brain = pd.merge(df_forebrain,df_hindbrain,how='inner',on='weeks_post_conception')
-
-df_hindbrain = df_comp_fore_hind_brain[['condition_y','mean_psi_y','weeks_post_conception','mean_gene_exp_y']]
-
-df_hindbrain = df_hindbrain.rename(columns = {'condition_y' : 'condition','mean_psi_y':'mean_psi','mean_gene_exp_y':'mean_gene_exp'})
-
-df_forebrain = df_comp_fore_hind_brain[['condition_x','mean_psi_x','weeks_post_conception','mean_gene_exp_x']]
-
-df_forebrain = df_forebrain.rename(columns = {'condition_x' : 'condition','mean_psi_x':'mean_psi','mean_gene_exp_x':'mean_gene_exp'})
-
-paired_brain_wks = pd.concat([df_forebrain,df_hindbrain])
-
-```
-
 ```{r, echo = FALSE}
 load("~/Documents/ezh2_pe_project/paired_brain_wks.RData")
 
@@ -175,14 +176,16 @@ stat.test <- compare_means(mean_psi ~ condition, data = paired_fore_hind_brain,p
 compare_means(mean_psi ~ condition, data = paired_fore_hind_brain,paired = TRUE,p.adjust.method = "fdr", method = 't.test') %>% dplyr::select(-".y.") %>%
   reactable()
 
-p <- ggplot(paired_fore_hind_brain, aes(x = condition, y = mean_psi)) +
+p <- ggplot(paired_fore_hind_brain, aes(x = condition, y = mean_psi*100)) +
   geom_boxplot(aes(fill = condition),show.legend = FALSE) +
-  geom_point(aes(y = mean_psi,group = condition), position = position_dodge(width = 0.75)) +
+  geom_point(aes(y = mean_psi*100,group = condition), position = position_dodge(width = 0.75)) + 
+  geom_line(aes(group = weeks_post_conception, color = as.factor(weeks_post_conception))) +
   xlab("Condition") +
-  ylab("PSI of EZH2-PE") + 
-  theme()
+  ylab("PSI (%)") + 
+  theme() + guides(color=guide_legend(title="Wks post-conception"))
+  
 
-p + stat_pvalue_manual(stat.test, y.position = 0.5, label = "p.adj = {p.adj}", position = position_dodge(0.8))
+p + stat_pvalue_manual(stat.test, y.position = 45, label = "p.adj = {p.adj}", position = position_dodge(0.8))
 
 ```
 
