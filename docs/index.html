@@ -11,10 +11,10 @@
 
 
 
-<title>index.utf8</title>
+<title>index.knit</title>
 
-<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -39,7 +39,7 @@
 <script src="site_libs/react-17.0.0/react.min.js"></script>
 <script src="site_libs/react-17.0.0/react-dom.min.js"></script>
 <script src="site_libs/reactwidget-1.0.0/react-tools.js"></script>
-<script src="site_libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
 <script src="site_libs/reactable-binding-0.2.3/reactable.js"></script>
 
 <style type="text/css">
@@ -301,12 +301,12 @@ div.tocify {
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row">
-<div class="col-sm-12 col-md-4 col-lg-3">
+<div class="col-xs-12 col-sm-4 col-md-3">
 <div id="TOC" class="tocify">
 </div>
 </div>
 
-<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -347,13 +347,40 @@ div.tocify {
 
 <div id="coordinates" class="section level1">
 <h1>Coordinates</h1>
-<div id="htmlwidget-32bbd3821afffb0be273" class="reactable html-widget" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-32bbd3821afffb0be273">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"organism":["mouse","human"],"gene":["EZH2","EZH2"],"flanking_exons":["chr6:47545675-47547436","chr7:148513775-148516779"],"cassette_exon":["chr6:47546748-47546830","chr7:148516069-148516151"],"exon_size":[82,82]},"columns":[{"accessor":"organism","name":"organism","type":"character"},{"accessor":"gene","name":"gene","type":"character"},{"accessor":"flanking_exons","name":"flanking_exons","type":"character"},{"accessor":"cassette_exon","name":"cassette_exon","type":"character"},{"accessor":"exon_size","name":"exon_size","type":"numeric"}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"b2ce8ef4a52caa031020ac61139de0dc","key":"b2ce8ef4a52caa031020ac61139de0dc"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-282983469c9302c5badc" class="reactable html-widget" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-282983469c9302c5badc">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"organism":["mouse","human"],"gene":["EZH2","EZH2"],"flanking_exons":["chr6:47545675-47547436","chr7:148513775-148516779"],"cassette_exon":["chr6:47546748-47546830","chr7:148516069-148516151"],"exon_size":[82,82]},"columns":[{"accessor":"organism","name":"organism","type":"character"},{"accessor":"gene","name":"gene","type":"character"},{"accessor":"flanking_exons","name":"flanking_exons","type":"character"},{"accessor":"cassette_exon","name":"cassette_exon","type":"character"},{"accessor":"exon_size","name":"exon_size","type":"numeric"}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"b2ce8ef4a52caa031020ac61139de0dc","key":"b2ce8ef4a52caa031020ac61139de0dc"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div id="ezh2-expression-across-development" class="section level2 tabset tabset-pills">
+<h2 class="tabset tabset-pills">EZH2 Expression Across Development</h2>
+<p>Obtained from Cardoso-Moreira (2019) web-based application: <a href="http://evodevoapp" class="uri">http://evodevoapp</a>. kaessmannlab.org.</p>
+<div id="human" class="section level3">
+<h3>Human</h3>
+<table>
+<tr>
+<td>
+<img src="human_ezh2.png">
+</td>
+</tr>
+</table>
+</div>
+<div id="mouse" class="section level3">
+<h3>Mouse</h3>
+<table>
+<tr>
+<td>
+<img src="mouse_ezh2.png">
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div id="section" class="section level1 unnumbered">
+<h1 class="unnumbered"></h1>
 </div>
 <div id="mouse-neuronal-differentiation" class="section level1">
 <h1>Mouse Neuronal Differentiation</h1>
-<div id="htmlwidget-e6a972b4b76e98eec01a" class="reactable html-widget" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-e6a972b4b76e98eec01a">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"group1":["mESC","mESC","NCC"],"group2":["NCC","neuron","neuron"],"p":[1,0.1,0.1],"p.adj":[1,0.15,0.15],"p.format":["1.0","0.1","0.1"],"p.signif":["ns","ns","ns"],"method":["Wilcoxon","Wilcoxon","Wilcoxon"]},"columns":[{"accessor":"group1","name":"group1","type":"character"},{"accessor":"group2","name":"group2","type":"character"},{"accessor":"p","name":"p","type":"numeric"},{"accessor":"p.adj","name":"p.adj","type":"numeric"},{"accessor":"p.format","name":"p.format","type":"character"},{"accessor":"p.signif","name":"p.signif","type":"character"},{"accessor":"method","name":"method","type":"character"}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"68400321f15d0bdaa540f36d5e328134","key":"68400321f15d0bdaa540f36d5e328134"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-3a3dee9ac21183a98a96" class="reactable html-widget" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-3a3dee9ac21183a98a96">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"group1":["mESC","mESC"],"group2":["NCC","neuron"],"p":[1,0.1],"p.adj":[1,0.2],"p.format":["1.0","0.1"],"p.signif":["ns","ns"],"method":["Wilcoxon","Wilcoxon"]},"columns":[{"accessor":"group1","name":"group1","type":"character"},{"accessor":"group2","name":"group2","type":"character"},{"accessor":"p","name":"p","type":"numeric"},{"accessor":"p.adj","name":"p.adj","type":"numeric"},{"accessor":"p.format","name":"p.format","type":"character"},{"accessor":"p.signif","name":"p.signif","type":"character"},{"accessor":"method","name":"method","type":"character"}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"d8ff918acb08428f4122129517b22582","key":"d8ff918acb08428f4122129517b22582"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 <div class="figure">
 <img src="index_files/figure-html/unnamed-chunk-2-1.png" alt="Figure 1. Plotted as median +/- interquartile range" width="672" />
 <p class="caption">
@@ -363,8 +390,8 @@ Figure 1. Plotted as median +/- interquartile range
 </div>
 <div id="human-ipscs-differentiated-into-neurons" class="section level1">
 <h1>Human iPSCs differentiated into neurons</h1>
-<div id="htmlwidget-2dd331be2bba9e594f85" class="reactable html-widget" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-2dd331be2bba9e594f85">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"group1":["iPSC","iPSC","NPC"],"group2":["NPC","neuron","neuron"],"p":[0.156185824178284,0.00952380952380952,0.00677394443787763],"p.adj":[0.16,0.014,0.014],"p.format":["0.1562","0.0095","0.0068"],"p.signif":["ns","**","**"],"method":["Wilcoxon","Wilcoxon","Wilcoxon"]},"columns":[{"accessor":"group1","name":"group1","type":"character"},{"accessor":"group2","name":"group2","type":"character"},{"accessor":"p","name":"p","type":"numeric"},{"accessor":"p.adj","name":"p.adj","type":"numeric"},{"accessor":"p.format","name":"p.format","type":"character"},{"accessor":"p.signif","name":"p.signif","type":"character"},{"accessor":"method","name":"method","type":"character"}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"95c59a33595c75883fe39fb2cb23eca1","key":"95c59a33595c75883fe39fb2cb23eca1"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-9536a37e20c19c76a359" class="reactable html-widget" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-9536a37e20c19c76a359">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"group1":["iPSC","iPSC","iPSC"],"group2":["NPC","Rosette","Neuron"],"p":[0.045576625175438,0.0294517500098202,0.00316444822391604],"p.adj":[0.046,0.044,0.0095],"p.format":["0.0456","0.0295","0.0032"],"p.signif":["*","*","**"],"method":["Wilcoxon","Wilcoxon","Wilcoxon"]},"columns":[{"accessor":"group1","name":"group1","type":"character"},{"accessor":"group2","name":"group2","type":"character"},{"accessor":"p","name":"p","type":"numeric"},{"accessor":"p.adj","name":"p.adj","type":"numeric"},{"accessor":"p.format","name":"p.format","type":"character"},{"accessor":"p.signif","name":"p.signif","type":"character"},{"accessor":"method","name":"method","type":"character"}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"40dabfec7cc9aeb13cb5da16ec048e64","key":"40dabfec7cc9aeb13cb5da16ec048e64"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 <div class="figure">
 <img src="index_files/figure-html/unnamed-chunk-4-1.png" alt="Figure 2. Plotted as median ± interquartile range" width="672" />
 <p class="caption">
@@ -382,8 +409,8 @@ Figure 2. Plotted as median ± interquartile range
 </div>
 <div id="forebrain-vs-hindbrain" class="section level1">
 <h1>Forebrain vs Hindbrain</h1>
-<div id="htmlwidget-c911be5261d2ab620e80" class="reactable html-widget" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-c911be5261d2ab620e80">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"group1":["forebrain"],"group2":["hindbrain"],"p":[0.0495071153982545],"p.adj":[0.05],"p.format":["0.05"],"p.signif":["*"],"method":["T-test"]},"columns":[{"accessor":"group1","name":"group1","type":"character"},{"accessor":"group2","name":"group2","type":"character"},{"accessor":"p","name":"p","type":"numeric"},{"accessor":"p.adj","name":"p.adj","type":"numeric"},{"accessor":"p.format","name":"p.format","type":"character"},{"accessor":"p.signif","name":"p.signif","type":"character"},{"accessor":"method","name":"method","type":"character"}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"9868eb525a8d05dd8db3994d9b6f7b4a","key":"9868eb525a8d05dd8db3994d9b6f7b4a"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-87d21d8a57bf6c2b393b" class="reactable html-widget" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-87d21d8a57bf6c2b393b">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"group1":["forebrain"],"group2":["hindbrain"],"p":[0.0495071153982545],"p.adj":[0.05],"p.format":["0.05"],"p.signif":["*"],"method":["T-test"]},"columns":[{"accessor":"group1","name":"group1","type":"character"},{"accessor":"group2","name":"group2","type":"character"},{"accessor":"p","name":"p","type":"numeric"},{"accessor":"p.adj","name":"p.adj","type":"numeric"},{"accessor":"p.format","name":"p.format","type":"character"},{"accessor":"p.signif","name":"p.signif","type":"character"},{"accessor":"method","name":"method","type":"character"}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"9868eb525a8d05dd8db3994d9b6f7b4a","key":"9868eb525a8d05dd8db3994d9b6f7b4a"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 <p><img src="index_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
 </div>
 
@@ -425,6 +452,9 @@ $(document).ready(function () {
 
 <script>
 $(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
 
     // move toc-ignore selectors from section div to header
     $('div.section.toc-ignore')

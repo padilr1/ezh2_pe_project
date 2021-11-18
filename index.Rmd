@@ -32,6 +32,26 @@ load("~/Documents/ezh2_pe_project/ezh2_pe_coordinates.RData")
 
 reactable(ezh2_pe_coordinates)
 ```
+## EZH2 Expression Across Development {.tabset .tabset-pills}
+Obtained from Cardoso-Moreira (2019) web-based application: http://evodevoapp.
+kaessmannlab.org.
+
+### Human
+<table>
+  <tr>
+    <td><img src="human_ezh2.png"></td>
+  </tr>
+ </table>
+
+### Mouse
+ <table>
+  <tr>
+    <td><img src="mouse_ezh2.png"></td>
+  </tr>
+ </table>
+
+# {-}
+
 # Mouse Neuronal Differentiation
 ```{r, echo = FALSE}
 load("~/Documents/ezh2_pe_project/mouse_neuronal_differentation.RData")
@@ -44,7 +64,7 @@ mouse_neuronal_differentiation <- mouse_neuronal_differentiation %>% dplyr::filt
 
 mouse_neuronal_differentiation$PSI <- mouse_neuronal_differentiation$PSI*100
 
-compare_means(PSI ~ condition, data = mouse_neuronal_differentiation,paired = FALSE,p.adjust.method = "fdr", method = 'wilcox.test',method.args = list(alternative = "greater")) %>% dplyr::select(-".y.") %>% reactable()
+compare_means(PSI ~ condition, data = mouse_neuronal_differentiation,paired = FALSE,p.adjust.method = "fdr", method = 'wilcox.test',method.args = list(alternative = "greater"),ref.group = "mESC") %>% dplyr::select(-".y.") %>% reactable()
 ```
 
 
@@ -95,31 +115,32 @@ p_mouse <- ggplot(mouse_neuronal_differentiation,aes(condition,PSI)) +
         panel.border = element_blank(),
         panel.background = element_blank())
 
-stat.test_mouse <- compare_means(PSI ~ condition, data = mouse_neuronal_differentiation,paired = FALSE,p.adjust.method = "fdr", method = 'wilcox.test',method.args = list(alternative = "greater")) %>% dplyr::select(-".y.") %>% mutate(y.position = c(18,22,20))
+stat.test_mouse <- compare_means(PSI ~ condition, data = mouse_neuronal_differentiation,paired = FALSE,p.adjust.method = "fdr", method = 'wilcox.test',method.args = list(alternative = "greater"),ref.group = "mESC") %>% dplyr::select(-".y.") %>% mutate(y.position = c(18,22))
 
 p_mouse + stat_pvalue_manual(stat.test_mouse, label = "p.adj = {p.adj}")
 ```
 # Human iPSCs differentiated into neurons
 ```{r, echo=FALSE, warning=FALSE}
-load("~/Documents/ezh2_pe_project/df_burke_2020.RData")
+load("~/Documents/ezh2_pe_project/df_hsapien_neuron_diff.RData")
 
-df_burke_2020$condition <- as.factor(df_burke_2020$condition)
-
-df_burke_2020 <- df_burke_2020 %>%
-  slice(-c(4))
-
-compare_means(PSI ~ condition, data = df_burke_2020,paired = FALSE,p.adjust.method = "fdr", method = 'wilcox.test',method.args = list(alternative = "greater")) %>% dplyr::select(-".y.") %>% reactable()
+compare_means(PSI ~ condition, data = df_hsapien_neuron_diff,paired = FALSE,p.adjust.method = "fdr", method = 'wilcox.test',method.args = list(alternative = "greater"),ref.group = "iPSC") %>% dplyr::select(-".y.") %>% reactable()
 ```
 
+
 ```{r, echo=FALSE,warning=FALSE,fig.cap="Figure 2. Plotted as median ± interquartile range"}
-summary_burke <- df_burke_2020 %>%
+#reorder boxplot
+df_hsapien_neuron_diff$condition <- factor(df_hsapien_neuron_diff$condition, levels=c("iPSC","NPC","Rosette","Neuron"))
+
+#subset_neuron <- df_hsapien_neuron_diff[df_hsapien_neuron_diff$condition == "neuron",]
+
+summary_burke <- df_hsapien_neuron_diff %>%
   dplyr::group_by(condition) %>%
   summarise(
     se = IQR(PSI),
     PSI = median(PSI)
   )
 
-p_burke <- ggplot(df_burke_2020,aes(condition,PSI)) +
+p_burke <- ggplot(df_hsapien_neuron_diff,aes(condition,PSI)) +
   geom_jitter(position = position_jitter(0.2),color = "darkgray", size = 2) +
   geom_errorbar(aes(ymin = PSI-se, ymax=PSI+se),data=summary_burke, width = 0.2,color="#0099ff") +
   geom_point(aes(x = condition,y=PSI),data=summary_burke,color = "#0099ff") +
@@ -133,8 +154,8 @@ p_burke <- ggplot(df_burke_2020,aes(condition,PSI)) +
         panel.border = element_blank(),
         panel.background = element_blank())
 
-stat.test_burke <- compare_means(PSI ~ condition, data = df_burke_2020,paired = FALSE,p.adjust.method = "fdr", method = 'wilcox.test',method.args = list(alternative = "greater")) %>% dplyr::select(-".y.") %>%
-  mutate(y.position = c(45,55,50))
+stat.test_burke <- compare_means(PSI ~ condition, data = df_hsapien_neuron_diff,paired = FALSE,p.adjust.method = "fdr", method = 'wilcox.test',method.args = list(alternative = "greater"),ref.group = "iPSC") %>% dplyr::select(-".y.") %>%
+  mutate(y.position = c(45,50,55))
 
 p_burke + stat_pvalue_manual(stat.test_burke, label = "p.adj = {p.adj}")
 ```
