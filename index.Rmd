@@ -68,7 +68,7 @@ compare_means(PSI ~ condition, data = mouse_neuronal_differentiation,paired = FA
 ```
 
 
-```{r, echo = FALSE, fig.cap="Figure 1. Plotted as median +/- interquartile range"}
+```{r, echo = FALSE, fig.cap="Figure 1. Plotted as median +/- interquartile range. mESC = mouse embryonic stem cells; NCC = neural crest cells"}
 #mouse_neuronal_differentiation %>% filter((condition != "PValue")) %>%
 #  ggplot(aes(x = condition, y = PSI*100)) +
  # geom_boxplot(aes(fill=condition),show.legend = FALSE) +
@@ -127,7 +127,7 @@ compare_means(PSI ~ condition, data = df_hsapien_neuron_diff,paired = FALSE,p.ad
 ```
 
 
-```{r, echo=FALSE,warning=FALSE,fig.cap="Figure 2. Plotted as median ± interquartile range"}
+```{r, echo=FALSE,warning=FALSE,fig.cap="Figure 2. Plotted as median ± interquartile range. iPSC = induced pluripotent stem cells; NPC = neural progenitor cell; Rosette = highly organized multicellular structures derived from NPC and neuroprogenitors within rosettes differentiate into neurons"}
 #reorder boxplot
 df_hsapien_neuron_diff$condition <- factor(df_hsapien_neuron_diff$condition, levels=c("iPSC","NPC","Rosette","Neuron"))
 
