@@ -8,7 +8,9 @@ output:
     toc_float: true
     collapsed: false
     number_sections: false
-    toc_depth: 2
+    toc_depth: 3
+    smooth_scroll: false
+    theme: cerulean
 ---
 
 ```{r setup, include=FALSE}
@@ -52,6 +54,8 @@ kaessmannlab.org.
 
 ## {-}
 
+<p>&nbsp;</p>
+
 # Mouse Neuronal Differentiation
 ```{r, echo = FALSE}
 load("~/Documents/ezh2_pe_project/mouse_neuronal_differentation.RData")
@@ -66,7 +70,7 @@ mouse_neuronal_differentiation$PSI <- mouse_neuronal_differentiation$PSI*100
 
 compare_means(PSI ~ condition, data = mouse_neuronal_differentiation,paired = FALSE,p.adjust.method = "fdr", method = 'wilcox.test',method.args = list(alternative = "greater"),ref.group = "mESC") %>% dplyr::select(-".y.") %>% reactable()
 ```
-
+<p>&nbsp;</p>
 
 ```{r, echo = FALSE, fig.cap="Figure 1. EZH2-PE inclusion in mESC differentiated into neurons. PSI plotted as median +/- interquartile range (n = 3). mESC = mouse embryonic stem cells; NCC = neural crest cells"}
 #mouse_neuronal_differentiation %>% filter((condition != "PValue")) %>%
@@ -120,12 +124,15 @@ stat.test_mouse <- compare_means(PSI ~ condition, data = mouse_neuronal_differen
 p_mouse + stat_pvalue_manual(stat.test_mouse, label = "p.adj = {p.adj}")
 ```
 # Human iPSCs differentiated into neurons
+<p>&nbsp;</p>
 ```{r, echo=FALSE, warning=FALSE}
 load("~/Documents/ezh2_pe_project/df_burke2020_expressionANDpsi.RData")
 
 compare_means(PSI ~ condition, data = df_burke_2020_expressionANDpsi,paired = FALSE,p.adjust.method = "fdr", method = 'wilcox.test',method.args = list(alternative = "greater"),ref.group = "iPSC") %>% dplyr::select(-".y.") %>% reactable()
 ```
+<p>&nbsp;</p>
 
+## Between samples
 
 ```{r, echo=FALSE,warning=FALSE,fig.cap="Figure 2. EZH2-PE inclusion in iPSCs differentiated into neurons with PSI plotted as median ± interquartile range (n ≥ 4). iPSC = induced pluripotent stem cells; NPC = neural progenitor cell; Rosette = highly organized multicellular structures derived from NPC and neuroprogenitors within rosettes differentiate into neurons. Data from Burke et al. 2020"}
 #make neuron capital letter
@@ -161,9 +168,13 @@ stat.test_burke <- compare_means(PSI ~ condition, data = df_burke_2020_expressio
 
 p_burke + stat_pvalue_manual(stat.test_burke, label = "p.adj = {p.adj}")
 ```
-### Relationship b/w EZH2-PE Inclusion & EZH2 Expression
+<p>&nbsp;</p>
 
-```{r, echo=FALSE,warning=FALSE, message=FALSE,fig.cap="Figure 3. Increasing EZH2-PE inclusion coincides with decreasing EZH2 expression. Data from Burke et al. 2020"}
+## EZH2 expression
+
+<p>&nbsp;</p>
+
+```{r, echo=FALSE,warning=FALSE, message=FALSE,fig.cap="Figure 3. Increasing EZH2-PE inclusion coincides with decreasing EZH2 expression. LogPSI calculated from the taking the log of the PSI(%). Data from Burke et al. 2020"}
 df_burke_2020_expressionANDpsi %>%
   ggplot(aes(x = log(PSI), y = normalized_ezh2_expression)) +
   geom_point(aes(color = condition)) +
@@ -178,9 +189,11 @@ df_burke_2020_expressionANDpsi %>%
         panel.border = element_blank(),
         panel.background = element_blank())
 ```
-
+<p>&nbsp;</p>
 # Human Hindbrain(Cerebellum)
-
+<p>&nbsp;</p>
+## Across developmental time
+<p>&nbsp;</p>
 ```{r, echo = FALSE,message=FALSE,fig.cap="Figure 4. EZH2-PE inclusion across human cerebellum development. Prenatal data are in weeks (w) postnatally, eg. 4w; neo, neonate; sch, school age (7–9 years);ya, yound adult (25-32 years); old, older adult (58 years). Data from Cardoso et al. 2019 from normal,healthy individuals/embryos"}
 load("~/Documents/ezh2_pe_project/work/processed_dat/cardoso2019_hsapien_PE.RData")
 load("~/Documents/ezh2_pe_project/cardoso2019_RPKM_PSI_hindbrain_hsapien.RData")
@@ -199,7 +212,9 @@ complete_cardoso2019_hsapien_hindbrain_PE %>%
         panel.background = element_blank()) +
   scale_x_continuous(breaks = c(0,12,22,27,31), labels=c("4w","neo","sch","ya","old"))
 ```
-```{r, echo = FALSE,message= FALSE, warning=FALSE,fig.cap="Figure 5. EZH2-PE inclusion increases while EZH2 expression decreases across time in human cerebellum. Data from Cardoso et al. 2019"}
+## EZH2 expression
+<p>&nbsp;</p>
+```{r, echo = FALSE,message= FALSE, warning=FALSE,fig.cap="Figure 5. EZH2-PE inclusion increases while EZH2 expression decreases across time in human cerebellum. LogPSI calculated from the taking the log of the PSI(%). Data from Cardoso et al. 2019"}
 #complete_cardoso2019_hsapien_hindbrain_PE$RealStage <- factor(complete_cardoso2019_hsapien_hindbrain_PE$RealStage, levels = c("prenatal","neonate","infant","toddler","school age child","adolescent","young adult","middle adult","older adult"))
 
 complete_cardoso2019_hsapien_hindbrain_PE %>%
@@ -216,7 +231,6 @@ complete_cardoso2019_hsapien_hindbrain_PE %>%
         panel.border = element_blank(),
         panel.background = element_blank())
 ```
-
 
 
 ```{r, echo = FALSE, message=FALSE, include =FALSE}
