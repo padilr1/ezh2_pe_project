@@ -127,7 +127,7 @@ compare_means(PSI ~ condition, data = df_burke_2020_expressionANDpsi,paired = FA
 ```
 
 
-```{r, echo=FALSE,warning=FALSE,fig.cap="Figure 2. EZH2-PE inclusion in iPSCs differentiated into neurons with PSI plotted as median ± interquartile range (n ≥ 4). iPSC = induced pluripotent stem cells; NPC = neural progenitor cell; Rosette = highly organized multicellular structures derived from NPC and neuroprogenitors within rosettes differentiate into neurons"}
+```{r, echo=FALSE,warning=FALSE,fig.cap="Figure 2. EZH2-PE inclusion in iPSCs differentiated into neurons with PSI plotted as median ± interquartile range (n ≥ 4). iPSC = induced pluripotent stem cells; NPC = neural progenitor cell; Rosette = highly organized multicellular structures derived from NPC and neuroprogenitors within rosettes differentiate into neurons. Data from Burke et al. 2020"}
 #make neuron capital letter
 
 #reorder boxplot
@@ -163,14 +163,14 @@ p_burke + stat_pvalue_manual(stat.test_burke, label = "p.adj = {p.adj}")
 ```
 ### Relationship b/w EZH2-PE Inclusion & EZH2 Expression
 
-```{r, echo=FALSE,warning=FALSE, message=FALSE}
+```{r, echo=FALSE,warning=FALSE, message=FALSE,fig.cap="Figure 3. Increasing EZH2-PE inclusion coincides with decreasing EZH2 expression. Data from Burke et al. 2020"}
 df_burke_2020_expressionANDpsi %>%
   ggplot(aes(x = log(PSI), y = normalized_ezh2_expression)) +
   geom_point(aes(color = condition)) +
   guides(color = guide_legend(title = "Condition")) +
   geom_smooth(method="lm") +
-  stat_cor(method = "pearson", cor.coef.name = "R", label.x = 2,label.y=11000) +
-  labs(title = "",x="logPSI",y="Normalized EZH2 Expression") +
+  stat_cor(method = "spearman", cor.coef.name = "rho", label.x = 2,label.y=11000) +
+  labs(title = "EZH2-PE",x="logPSI",y="Normalized EZH2 Expression") +
   theme(plot.title = element_text(hjust = 0.5,vjust = 2.5),
         axis.line = element_line(colour = "black"),
         panel.grid.major = element_blank(),
@@ -179,9 +179,47 @@ df_burke_2020_expressionANDpsi %>%
         panel.background = element_blank())
 ```
 
-# Human Hindbrain
+# Human Hindbrain(Cerebellum)
 
-```{r, echo = FALSE, message=FALSE}
+```{r, echo = FALSE,message=FALSE,fig.cap="Figure 4. EZH2-PE inclusion across human cerebellum development. Prenatal data are in weeks (w) postnatally, eg. 4w; neo, neonate; sch, school age (7–9 years);ya, yound adult (25-32 years); old, older adult (58 years). Data from Cardoso et al. 2019 from normal,healthy individuals/embryos"}
+load("~/Documents/ezh2_pe_project/work/processed_dat/cardoso2019_hsapien_PE.RData")
+load("~/Documents/ezh2_pe_project/cardoso2019_RPKM_PSI_hindbrain_hsapien.RData")
+
+complete_cardoso2019_hsapien_hindbrain_PE %>%
+  ggplot(aes(x = StandardizedStage, y = PSI)) +
+  geom_point() +
+  geom_smooth(method="lm") +
+  stat_cor(method = "spearman", cor.coef.name = "rho",label.y = 100,label.x = 2) +
+  labs(title = "EZH2-PE",x="Developmental Stage",y="PSI (%)") +
+   theme(plot.title = element_text(hjust = 0.5,vjust = 2.5),
+        axis.line = element_line(colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank()) +
+  scale_x_continuous(breaks = c(0,12,22,27,31), labels=c("4w","neo","sch","ya","old"))
+```
+```{r, echo = FALSE,message= FALSE, warning=FALSE,fig.cap="Figure 5. EZH2-PE inclusion increases while EZH2 expression decreases across time in human cerebellum. Data from Cardoso et al. 2019"}
+#complete_cardoso2019_hsapien_hindbrain_PE$RealStage <- factor(complete_cardoso2019_hsapien_hindbrain_PE$RealStage, levels = c("prenatal","neonate","infant","toddler","school age child","adolescent","young adult","middle adult","older adult"))
+
+complete_cardoso2019_hsapien_hindbrain_PE %>%
+  ggplot(aes(x = log(PSI), y = EZH2_expression)) +
+  geom_point(aes(color = RealStage)) +
+  guides(color = guide_legend(title = "Developmental Stage")) +
+  geom_smooth(method="lm") +
+  stat_cor(method = "spearman", cor.coef.name = "rho", label.x = 3,label.y=51) +
+  labs(title = "EZH2-PE",x="logPSI",y="Normalized EZH2 Expression (RPKM)") +
+  theme(plot.title = element_text(hjust = 0.5,vjust = 2.5),
+        axis.line = element_line(colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())
+```
+
+
+
+```{r, echo = FALSE, message=FALSE, include =FALSE}
 load("hindbrain_ezh2_gene_exp.RData")
 load("se_dev.RData")
 load("hindbrain_complete.RData")
@@ -214,9 +252,7 @@ plot_grid(gene_time_plot,psi_time_plot,gene_psi_plot,labels = "AUTO")
 #annotate_figure(figure,bottom = textGrob("Weeks Post-conception", gp = gpar(cex = 1.0)))
 ```
 
-# Human Forebrain
-
-```{r, echo = FALSE, message=FALSE}
+```{r, echo = FALSE, message=FALSE, include=FALSE}
 load("se_dev.RData")
 load("forebrain_complete.RData")
 load("complete_forebrain.RData")
@@ -246,9 +282,7 @@ fore_gene_psi_plot <- complete_forebrain %>%
 plot_grid(fore_gene_time_plot,fore_psi_time_plot,fore_gene_psi_plot,labels = "AUTO")
 ```
 
-# Forebrain vs Hindbrain
-
-```{r, echo = FALSE}
+```{r, echo = FALSE,include=FALSE}
 load("~/Documents/ezh2_pe_project/paired_brain_wks.RData")
 
 stat.test <- compare_means(mean_psi ~ condition, data = paired_fore_hind_brain,paired = TRUE,p.adjust.method = "fdr", method = 't.test') 
