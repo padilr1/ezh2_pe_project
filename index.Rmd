@@ -50,7 +50,7 @@ kaessmannlab.org.
   </tr>
  </table>
 
-# {-}
+## {-}
 
 # Mouse Neuronal Differentiation
 ```{r, echo = FALSE}
