@@ -170,7 +170,7 @@ p_burke + stat_pvalue_manual(stat.test_burke, label = "p.adj = {p.adj}")
 ```
 <p>&nbsp;</p>
 
-## EZH2 expression
+## EZH2 expression & PE inclusion
 
 <p>&nbsp;</p>
 
@@ -181,7 +181,7 @@ df_burke_2020_expressionANDpsi %>%
   guides(color = guide_legend(title = "Condition")) +
   geom_smooth(method="lm") +
   stat_cor(method = "spearman", cor.coef.name = "rho", label.x = 2,label.y=11000) +
-  labs(title = "EZH2-PE",x="logPSI",y="Normalized EZH2 Expression") +
+  labs(title = "",x="logPSI",y="Normalized EZH2 Expression") +
   theme(plot.title = element_text(hjust = 0.5,vjust = 2.5),
         axis.line = element_line(colour = "black"),
         panel.grid.major = element_blank(),
@@ -212,7 +212,8 @@ complete_cardoso2019_hsapien_hindbrain_PE %>%
         panel.background = element_blank()) +
   scale_x_continuous(breaks = c(0,12,22,27,31), labels=c("4w","neo","sch","ya","old"))
 ```
-## EZH2 expression
+<p>&nbsp;</p>
+## EZH2 expression & PE inclusion
 <p>&nbsp;</p>
 ```{r, echo = FALSE,message= FALSE, warning=FALSE,fig.cap="Figure 5. EZH2-PE inclusion increases while EZH2 expression decreases across time in human cerebellum. LogPSI calculated from the taking the log of the PSI(%). Data from Cardoso et al. 2019"}
 #complete_cardoso2019_hsapien_hindbrain_PE$RealStage <- factor(complete_cardoso2019_hsapien_hindbrain_PE$RealStage, levels = c("prenatal","neonate","infant","toddler","school age child","adolescent","young adult","middle adult","older adult"))
@@ -223,7 +224,7 @@ complete_cardoso2019_hsapien_hindbrain_PE %>%
   guides(color = guide_legend(title = "Developmental Stage")) +
   geom_smooth(method="lm") +
   stat_cor(method = "spearman", cor.coef.name = "rho", label.x = 3,label.y=51) +
-  labs(title = "EZH2-PE",x="logPSI",y="Normalized EZH2 Expression (RPKM)") +
+  labs(title = "",x="logPSI",y="Normalized EZH2 Expression (RPKM)") +
   theme(plot.title = element_text(hjust = 0.5,vjust = 2.5),
         axis.line = element_line(colour = "black"),
         panel.grid.major = element_blank(),
